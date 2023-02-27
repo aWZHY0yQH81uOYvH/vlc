@@ -116,11 +116,25 @@ static void playlist_vaControl( playlist_t *p_playlist, int i_query,
         break;
 
     case PLAYLIST_SKIP:
-        pl_priv(p_playlist)->request.p_node = get_current_status_node( p_playlist );
-        pl_priv(p_playlist)->request.p_item = get_current_status_item( p_playlist );
-        pl_priv(p_playlist)->request.i_skip = (int) va_arg( args, int );
-        pl_priv(p_playlist)->request.b_request = true;
-        break;
+        {
+            int skip = (int) va_arg( args, int );
+
+            // Restart item if it's been playing for more than 10s
+            if( var_GetInteger( pl_priv(p_playlist)->p_input, "time" ) > 10 * CLOCK_FREQ
+                && skip == -1 )
+
+                var_SetInteger( pl_priv(p_playlist)->p_input, "time", 0 );
+
+            else
+            {
+                pl_priv(p_playlist)->request.p_node = get_current_status_node( p_playlist );
+                pl_priv(p_playlist)->request.p_item = get_current_status_item( p_playlist );
+                pl_priv(p_playlist)->request.i_skip = skip;
+                pl_priv(p_playlist)->request.b_request = true;
+            }
+
+            break;
+        }
 
     case PLAYLIST_PAUSE:
         if( pl_priv(p_playlist)->p_input == NULL )
