@@ -473,7 +473,7 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
     /* Declare user activity.
      This wakes the display if it is off, and postpones display sleep according to the users system preferences
      Available from 10.7.3 */
-    if ([o_main activeVideoPlayback] && &IOPMAssertionDeclareUserActivity && shouldDisableScreensaver)
+    if (false && [o_main activeVideoPlayback] && &IOPMAssertionDeclareUserActivity && shouldDisableScreensaver)
     {
         CFStringRef reasonForActivity = CFStringCreateWithCString(kCFAllocatorDefault, _("VLC media playback"), kCFStringEncodingUTF8);
         IOReturn success = IOPMAssertionDeclareUserActivity(reasonForActivity,
